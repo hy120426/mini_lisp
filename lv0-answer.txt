@@ -1,0 +1,10 @@
+1.为什么 Tokenizer::tokenize 接受的形参类型是 const std::string& 而不是 std::string？可不可以用 std::string？
+答：使用const std::string&能够避免传入实参时进行的复制，从而节约时间。用std::string也可以但是用时较长。
+2.为什么使用 TokenPtr，也即 std::unique_ptr<Token>？如果改用 Token*，会有什么影响？
+答：因为std::unique_ptr<Token>是智能指针，不需要手动delete new的新指针。如果改用Token*，如果程序在delete新指针之前抛出异常导致程序结束就会发生内存泄漏。而使用智能指针即使发生异常时也能delete，避免内存泄漏。
+3.main 函数中 std::cout << *token 是如何实现的？
+答：tokens是以Tokenptr为元素的队列，故token可视为其迭代器，通过*token访问tokens中的元素；Token类中的toString函数和operator<<重载能够实现输出一个Token类型的元素。
+4.当词法分析出现错误时，程序是如何进行错误处理的？
+答：程序使用了一个try-catch语句。在main函数执行try语句时，如果词法分析发生了错误则会抛出错误，catch语句捕捉到后通过what()函数判断错误类型并通过cerr输出并结束程序。
+5. 使用 std::deque<TokenPtr> 相比 std::vector<TokenPtr> 的好处是什么？
+答：相比于vector，deque中有pop_front等函数，更方便在队列首段添加或删除元素。
